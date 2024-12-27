@@ -3,11 +3,24 @@
   vars_files:
     - vars.yml
   tasks:
-  - name: Install nginx package
+  - name: Install packages
     ansible.builtin.apt:
-      name: nginx
-      state: present
+      name: 
+        - nginx
+        - postgresql
+        - redis-server
+        - python3
+        - python3-pip
+        - python3-psycopg2
+      state: latest
       update_cache: yes
+    become: yes
+  
+  - name: Ensure nginx is running
+    ansible.builtin.service:
+      name: nginx
+      state: started
+      enabled: yes
     become: yes
   
   - name: Update nginx conf

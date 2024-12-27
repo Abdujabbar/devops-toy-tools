@@ -1,4 +1,7 @@
 - hosts: webservers
+  gather_facts: no
+  vars_files:
+    - vars.yml
   tasks:
   - name: Install nginx package
     ansible.builtin.apt:
@@ -7,18 +10,18 @@
       update_cache: yes
     become: yes
   
-  - name: Copy nginx.conf
-    ansible.builtin.copy:
+  - name: Update nginx conf
+    ansible.builtin.template:
       src: nginx.conf
-      dest: /etc/nginx/nginx.conf
+      dest: "{{nginx_conf_path}}"
     become: yes
     notify: 
       - restart nginx
   
-  - name: Copy index.html
-    ansible.builtin.copy:
+  - name: Change the index.html template
+    ansible.builtin.template:
       src: index.html
-      dest: /usr/share/nginx/html/index.html 
+      dest: "{{nginx_shared_path}}index.html" 
       force: yes
     become: yes
     notify: 
